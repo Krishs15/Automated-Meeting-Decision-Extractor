@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automated Meeting Decision Extraction System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface-2: #243044;
+      --border: #2d3a4f;
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #22c55e;
+      --success-bg: rgba(34, 197, 94, 0.12);
+      --radius: 12px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(59, 130, 246, 0.18), transparent),
+        radial-gradient(ellipse 60% 40% at 90% 100%, rgba(34, 197, 94, 0.08), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.15);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 620px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 280px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 1rem;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    textarea::placeholder { color: #5c6b82; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1.25rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover { background: var(--border); }
+
+    .results-panel {
+      grid-column: 1 / -1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--muted);
+    }
+
+    .empty-state svg {
+      opacity: 0.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .decision-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .decision-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: var(--success-bg);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+    }
+
+    .decision-num {
+      flex-shrink: 0;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--success);
+      background: rgba(34, 197, 94, 0.2);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+    }
+
+    .decision-text {
+      flex: 1;
+      font-size: 0.98rem;
+    }
+
+    .confidence {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .summary {
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .summary strong { color: var(--success); }
+
+    .error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .tech-tag {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">NLP Project (Unit 01) · Problem #1</span>
+      <h1>Automated Meeting Decision Extraction System</h1>
+      <p class="subtitle">
+        Paste a meeting transcript and this system will identify sentences containing
+        final decisions using sentence segmentation, TF-IDF, and classification.
+      </p>
+    </header>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Meeting Transcript</h2>
+        <textarea
+          id="transcript"
+          placeholder="Paste your meeting transcript here…"
+          spellcheck="false"
+        ></textarea>
+        <div class="actions">
+          <button class="btn-primary" id="extractBtn" type="button">Extract Decisions</button>
+          <button class="btn-secondary" id="sampleBtn" type="button">Load Sample</button>
+          <button class="btn-secondary" id="clearBtn" type="button">Clear</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>How It Works</h2>
+        <ol style="color: var(--muted); font-size: 0.92rem; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem;">
+          <li>Segment the transcript into individual sentences</li>
+          <li>Remove filler / small-talk openers</li>
+          <li>Detect decision-related language patterns</li>
+          <li>Classify each sentence with a TF-IDF + logistic regression model</li>
+          <li>Return numbered decision sentences</li>
+        </ol>
+      </section>
+
+      <section class="panel results-panel">
+        <h2>Extracted Decisions</h2>
+        <div id="results">
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 12h6M9 16h6M7 4h10a2 2 0 012 2v14l-4-2-4 2-4-2-4 2V6a2 2 0 012-2z"/>
+            </svg>
+            <p>Decisions will appear here after extraction.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="tech-tags">
+      <span class="tech-tag">NLTK</span>
+      <span class="tech-tag">spaCy-ready pipeline</span>
+      <span class="tech-tag">TF-IDF</span>
+      <span class="tech-tag">Scikit-learn</span>
+      <span class="tech-tag">Flask</span>
+    </div>
+  </div>
+
+  <script>
+    const SAMPLE = `Good morning everyone thanks for joining on time.
+Let's start by reviewing last week's progress.
+The backend API is mostly done but testing is still pending.
+I think we should also look at the database schema again.
+We will finalize the database schema by Thursday.
+Does anyone have concerns about the current schema design?
+No major concerns from my side.
+We have decided to use PostgreSQL instead of MySQL for this project.
+That sounds like a reasonable choice given our scaling needs.
+Moving on, let's discuss the frontend timeline.
+The frontend team agreed to complete the login page by next Monday.
+Great, that works well with our overall schedule.
+Are there any blockers anyone wants to raise?
+I'm still waiting on API documentation from the backend team.
+We will share the API docs by end of day tomorrow.
+Perfect, thanks everyone, let's wrap up here.`;
+
+    const transcriptEl = document.getElementById("transcript");
+    const extractBtn = document.getElementById("extractBtn");
+    const sampleBtn = document.getElementById("sampleBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const resultsEl = document.getElementById("results");
+
+    sampleBtn.addEventListener("click", () => {
+      transcriptEl.value = SAMPLE;
+    });
+
+    clearBtn.addEventListener("click", () => {
+      transcriptEl.value = "";
+      resultsEl.innerHTML = `
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 12h6M9 16h6M7 4h10a2 2 0 012 2v14l-4-2-4 2-4-2-4 2V6a2 2 0 012-2z"/>
+          </svg>
+          <p>Decisions will appear here after extraction.</p>
+        </div>`;
+    });
+
+    extractBtn.addEventListener("click", async () => {
+      const transcript = transcriptEl.value.trim();
+      if (!transcript) {
+        resultsEl.innerHTML = `<div class="error">Please paste a meeting transcript first.</div>`;
+        return;
+      }
+
+      extractBtn.disabled = true;
+      extractBtn.innerHTML = `<span class="spinner"></span>Extracting…`;
+
+      try {
+        const res = await fetch("/api/extract", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ transcript }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Extraction failed.");
+        }
+
+        if (!data.decisions.length) {
+          resultsEl.innerHTML = `
+            <p class="summary">No decision sentences detected in this transcript.</p>
+            <div class="empty-state"><p>Try the sample transcript or add more explicit decision language (e.g. "We will…", "We decided…").</p></div>`;
+          return;
+        }
+
+        const items = data.decisions.map((d) => `
+          <li class="decision-item">
+            <span class="decision-num">Decision ${d.index}</span>
+            <span class="decision-text">${escapeHtml(d.text)}</span>
+            <span class="confidence">${Math.round(d.confidence * 100)}%</span>
+          </li>
+        `).join("");
+
+        resultsEl.innerHTML = `
+          <p class="summary">Found <strong>${data.count}</strong> decision sentence${data.count === 1 ? "" : "s"}.</p>
+          <ul class="decision-list">${items}</ul>`;
+      } catch (err) {
+        resultsEl.innerHTML = `<div class="error">${escapeHtml(err.message)}</div>`;
+      } finally {
+        extractBtn.disabled = false;
+        extractBtn.textContent = "Extract Decisions";
+      }
+    });
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+  </script>
+</body>
+</html>

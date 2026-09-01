@@ -1,0 +1,80 @@
+transcript_id,sentence,label
+1,Good morning everyone thanks for joining on time.,0
+1,Let's start by reviewing last week's progress.,0
+1,The backend API is mostly done but testing is still pending.,0
+1,I think we should also look at the database schema again.,0
+1,We will finalize the database schema by Thursday.,1
+1,Does anyone have concerns about the current schema design?,0
+1,No major concerns from my side.,0
+1,We have decided to use PostgreSQL instead of MySQL for this project.,1
+1,That sounds like a reasonable choice given our scaling needs.,0
+1,"Moving on, let's discuss the frontend timeline.",0
+1,The frontend team agreed to complete the login page by next Monday.,1
+1,"Great, that works well with our overall schedule.",0
+1,Are there any blockers anyone wants to raise?,0
+1,I'm still waiting on API documentation from the backend team.,0
+1,We will share the API docs by end of day tomorrow.,1
+1,"Perfect, thanks everyone, let's wrap up here.",0
+2,"Hi all, hope everyone had a good weekend.",0
+2,Let's dive right into today's agenda.,0
+2,First item is the marketing budget for next quarter.,0
+2,I believe we should increase the budget by ten percent.,0
+2,"After discussion, we finalized the marketing budget increase of ten percent.",1
+2,"Next, let's talk about the new hire onboarding process.",0
+2,The onboarding process has been slow lately.,0
+2,We agreed to shorten the onboarding process to five days.,1
+2,That should help new employees get productive faster.,0
+2,Any updates on the client contract renewal?,0
+2,The client asked for a few more days to review terms.,0
+2,We decided to extend the contract review deadline by one week.,1
+2,"Sounds good, let's move to the last topic.",0
+2,Someone mentioned issues with the shared drive access.,0
+2,IT will resolve the shared drive access issue by tomorrow morning.,1
+2,"Thanks everyone, meeting adjourned.",0
+3,"Morning team, let's get started.",0
+3,Today we need to finalize the product launch date.,0
+3,Marketing wants more time for the campaign.,0
+3,Engineering says the product is ready now.,0
+3,We will launch the product on the fifteenth of next month.,1
+3,That gives marketing two extra weeks to prepare.,0
+3,Let's also discuss the pricing strategy.,0
+3,I personally think the current price point is too high.,0
+3,The team agreed to reduce the price by fifteen percent.,1
+3,That should improve our competitiveness in the market.,0
+3,What about the support team staffing?,0
+3,Support has been understaffed for the past month.,0
+3,We will hire two additional support agents starting next week.,1
+3,"Great, that addresses a major concern.",0
+3,Any other business before we close?,0
+3,"Nothing else from my end, thanks everyone.",0
+4,"Hey everyone, quick sync today.",0
+4,Let's go over the bug backlog first.,0
+4,There are still twelve open bugs from last sprint.,0
+4,I think most of them are low priority.,0
+4,We agreed to fix all critical bugs before the next release.,1
+4,Sounds reasonable given the deadline pressure.,0
+4,What about the UI redesign feedback?,0
+4,Users mostly liked the new design in testing.,0
+4,A few users found the navigation confusing.,0
+4,We will simplify the navigation menu based on user feedback.,1
+4,That should improve the overall user experience.,0
+4,Let's also check on the server migration status.,0
+4,Migration is about seventy percent complete.,0
+4,We decided to complete the server migration by Friday.,1
+4,"Perfect, let's reconvene next week to check progress.",0
+4,"Sounds good, thanks everyone.",0
+5,"Hello team, hope you're all doing well.",0
+5,Let's discuss the quarterly performance review process.,0
+5,Some managers found the current review form too long.,0
+5,"I agree, it could definitely be shortened.",0
+5,We will shorten the performance review form by half.,1
+5,That should save managers a lot of time.,0
+5,"Next, let's talk about the office return policy.",0
+5,Many employees prefer to continue working remotely.,0
+5,We decided to make remote work permanent for all teams.,1
+5,"That's a significant change, employees will be happy.",0
+5,Let's also address the software license renewals.,0
+5,A few licenses are expiring next month.,0
+5,We will renew all expiring software licenses by the end of the week.,1
+5,"Great, I think that covers everything for today.",0
+5,"Thanks everyone, see you next week.",0
