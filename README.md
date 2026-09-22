@@ -57,13 +57,13 @@ Run the extractor on a sample transcript by executing the main script and passin
 python extract_decisions.py --input data/sample_transcript.txt --output results/meeting_minutes.json
 ```
 
-##Arguments:
+## Arguments:
 
 --input: Path to the raw transcript file.
 
 --output: (Optional) Path to save the structured JSON or markdown summary.
 
-##📊 Example Output
+## 📊 Example Output
 Input (Raw Transcript):
 
 "Alice: So I think we should proceed with the AWS migration next month. Bob: I agree, let's finalize the budget by Friday. Charlie: Sounds good, I'll schedule a sync with the dev team tomorrow."
@@ -81,8 +81,8 @@ Output (Extracted Minutes):
   ]
 }
 ```
-##🤝 Contributing
+## 🤝 Contributing
 Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
 
-##📜 License
+## 📜 License
 Distributed under the MIT License. See LICENSE for more information.
