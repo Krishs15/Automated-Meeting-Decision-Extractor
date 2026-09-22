@@ -1,52 +1,88 @@
 # Automated Meeting Decision Extractor
 
-A lightweight Python application that parses meeting transcripts, applies NLP preprocessing, and uses a trained decision-classification model to automatically extract key decisions and action items.
+> A lightweight Python application that processes meeting transcripts, applies NLP preprocessing, and uses a trained decision-classification model to automatically extract key decisions and action items. 
 
-## Algorithm Overview
-1. **Load Transcript** ñ Read CSV/TSV of meeting dialogue.
-2. **Preprocess** ñ Tokenise, filter stop-words, lemmatise, and generate TF-IDF features.
-3. **Classification** ñ A scikit-learn DecisionTreeClassifier (or joblib-saved model) predicts whether a sentence contains a decision.
-4. **Post-process** ñ Group consecutive decision sentences, assign timestamps, and output a concise summary.
+Ideal for summarizing discussions and generating concise, actionable meeting minutes, this tool reduces the manual overhead of administrative meeting tasks.
 
-## Workflow Diagram
-`mermaid
-flowchart TD
-    A[Read transcript CSV] --> B[Preprocess text]
-    B --> C[Extract TF-IDF features]
-    C --> D[Load trained model]
-    D --> E[Predict decision sentences]
-    E --> F[Aggregate & format output]
-    F --> G[Export JSON/HTML report]
-`
+---
 
-## Project Structure
-`
-Automated Meeting Decision Meeting/
-+- backend/
-¶   +- app.py            # FastAPI entry point
-¶   +- extractor.py      # Core extraction logic
-¶   +- preprocessing.py   # Text cleaning and feature extraction
-¶   +- train_model.py     # Model training script
-¶   +- models/
-¶       +- decision_classifier.joblib
-+- data/
-¶   +- meeting_transcripts.csv
-+- frontend/
-¶   +- index.html        # Simple UI for uploading transcripts
-+- requirements.txt
-+- README.md
-`
+## üìñ Overview
 
-## Usage
-`ash
-# Install dependencies
-pip install -r requirements.txt
+In fast-paced environments, tracking decisions and actionable tasks from meetings can be tedious and prone to human error. **Automated Meeting Decision Extractor** leverages Natural Language Processing (NLP) to read raw transcript data, clean it, and classify sentences into "decisions," "action items," or "general conversation." The result is a clean, structured summary of what was actually decided and who needs to do what.
 
-# Run the API server
-uvicorn backend.app:app --reload
-`
+## ‚ú® Key Features
 
-Upload a transcript via the web UI or call the /extract endpoint to receive extracted decisions.
+*   **Robust NLP Preprocessing:** Automatically handles noise, filler words, and formatting inconsistencies common in raw meeting transcripts.
+*   **Decision-Classification Model:** Employs a custom-trained machine learning model to accurately isolate sentences that contain commitments, action items, or final decisions.
+*   **Lightweight & Fast:** Designed to run efficiently in standard Python environments without requiring heavy cloud infrastructure.
+*   **Actionable Outputs:** Generates clean, concise meeting minutes that are immediately ready to be shared with stakeholders.
 
-## License
-MIT License ñ see LICENSE file.
+## ‚öôÔ∏è Pipeline & Methodology
+
+1.  **Transcript Ingestion:** Reads text files or standard transcript formats (e.g., from Zoom, Teams, or Google Meet).
+2.  **Text Preprocessing:** Tokenization, stop-word removal, and dependency parsing to prepare the text for the model.
+3.  **Classification:** The core model evaluates the intent of each sentence to extract high-value information.
+4.  **Formatting:** Groups the extracted data into readable summaries.
+
+## üöÄ Getting Started
+
+### Prerequisites
+
+*   Python 3.8+
+*   `pip` package manager
+
+### Installation
+
+1.  Clone this repository:
+    ```bash
+    git clone [https://github.com/Krishs15/Automated-Meeting-Decision-Extractor.git](https://github.com/Krishs15/Automated-Meeting-Decision-Extractor.git)
+    cd Automated-Meeting-Decision-Extractor
+    ```
+
+2.  Install the required dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  *(Optional)* Download the pre-trained core NLP model, if relying on libraries like spaCy:
+    ```bash
+    python -m spacy download en_core_web_sm
+    ```
+
+## üíª Usage
+
+Run the extractor on a sample transcript by executing the main script and passing your text file as an argument:
+
+```bash
+python extract_decisions.py --input data/sample_transcript.txt --output results/meeting_minutes.json
+```
+
+##Arguments:
+
+--input: Path to the raw transcript file.
+
+--output: (Optional) Path to save the structured JSON or markdown summary.
+
+##üìä Example Output
+Input (Raw Transcript):
+
+"Alice: So I think we should proceed with the AWS migration next month. Bob: I agree, let's finalize the budget by Friday. Charlie: Sounds good, I'll schedule a sync with the dev team tomorrow."
+
+Output (Extracted Minutes):
+
+```bash
+{
+  "Decisions": [
+    "Proceed with the AWS migration next month."
+  ],
+  "Action Items": [
+    "Finalize the budget by Friday. (Owner: Bob)",
+    "Schedule a sync with the dev team tomorrow. (Owner: Charlie)"
+  ]
+}
+```
+##ü§ù Contributing
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+
+##üìú License
+Distributed under the MIT License. See LICENSE for more information.
